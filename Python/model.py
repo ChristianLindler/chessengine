@@ -16,7 +16,7 @@ def train_model():
     for move in moves:
         encoded_moves.append(encode_move(move))
 
-    encode_boards = np.array(encode_boards)
+    encoded_boards = np.array(encoded_boards)
     encoded_moves = np.array(encoded_moves)
         
     model = Sequential([
