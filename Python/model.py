@@ -15,12 +15,15 @@ def train_model():
         encoded_boards.append(encode_board(board))
     for move in moves:
         encoded_moves.append(encode_move(move))
+
+    encode_boards = np.array(encode_boards)
+    encoded_moves = np.array(encoded_moves)
         
     model = Sequential([
         Conv2D(32, kernel_size=(3, 3), activation='relu', padding='same', input_shape=(8,8,20)),
         Flatten(),
         Dense(128, activation='relu'),
-        Dense(128, activation='softmax'),
+        Dense(8 * 8 * 2, activation='softmax'),
         tf.keras.layers.Reshape(8,8,2)
     ])
 
@@ -29,5 +32,5 @@ def train_model():
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
     model.fit(X_train, y_train, epochs=5, batch_size=32, validation_split=0.2)
-    
+
     model.save('chess_model.h5')
