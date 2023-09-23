@@ -1,7 +1,5 @@
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.layers import Dense, Flatten, Conv2D
-from tensorflow.keras.models import Sequential
 from sklearn.model_selection import train_test_split
 from board_states import fen_games
 from encoding import encode_board, encode_move
@@ -19,11 +17,11 @@ def train_model():
     encoded_boards = np.array(encoded_boards)
     encoded_moves = np.array(encoded_moves)
         
-    model = Sequential([
-        Conv2D(32, kernel_size=(3, 3), activation='relu', padding='same', input_shape=(8,8,20)),
-        Flatten(),
-        Dense(128, activation='relu'),
-        Dense(8 * 8 * 2, activation='softmax'),
+    model = tf.keras.models.Sequential([
+        tf.keras.layers.Conv2D(32, kernel_size=(3, 3), activation='relu', padding='same', input_shape=(8,8,20)),
+        tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dense(8 * 8 * 2, activation='softmax'),
         tf.keras.layers.Reshape(8,8,2)
     ])
 
