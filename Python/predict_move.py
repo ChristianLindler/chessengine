@@ -1,11 +1,11 @@
-from tensorflow.keras.models import load_model
+import tensorflow as tf
 import numpy as np
 import chess
 from encoding import encode_board, decode_move
 from app import get_chessboard
 
 def predict_next_move(fen):
-    model = load_model('chess_model.h5')
+    model = tf.keras.models.load_model('chess_model.h5')
     board = get_chessboard()
     encoded_board = encode_board(board)
     while True:
