@@ -17,12 +17,12 @@ function Square({ square, onClick, bgColor }) {
   return (
     <Paper
       className="square"
-      elevation={3}
+      elevation={0}
       onClick={onClick}
       style={{
         backgroundColor: bgColor,
-        width: '50px',
-        height: '50px',
+        width: '75px',
+        height: '75px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
