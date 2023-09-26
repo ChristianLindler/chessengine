@@ -1,4 +1,5 @@
 import numpy as np
+import tqdm
 
 def encode_board(fen):
     encoded = np.zeros((8, 8, 20))

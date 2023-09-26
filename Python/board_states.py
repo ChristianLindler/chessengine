@@ -1,13 +1,15 @@
 import chess.pgn
+from tqdm import tqdm, trange
 
 def list_games():
     #read games from pgn file
     with open("chess.pgn") as pgn_file:
         games = []
         game_count = 0
-        while True:
+        print("Reading games from pgn file...")
+        for game_count in trange(10000):
             game = chess.pgn.read_game(pgn_file)
-            if game is None or game_count > 5000: 
+            if game is None: 
                 break
             games.append(game)
             game_count += 1
@@ -19,7 +21,8 @@ def fen_games():
     X = [] #games in FEN
     Y = [] #moves in UCI
     games = list_games()
-    for game in games:
+    print("Building boards from moves...")
+    for game in tqdm(games):
         board = game.board()
         for move in game.mainline_moves():
             X.append(board.fen())

@@ -5,29 +5,33 @@ from encoding import encode_board, decode_move
 from app import get_chessboard
 
 
-# def sample_move(probs, temperature=1.0):
-#     probs = np.asarray(probs).astype('float64')
-#     probs = np.log(probs) / temperature
-#     exp_probs = np.exp(probs)
-#     probs = exp_probs / np.sum(exp_probs)
-#     return np.random.choice(len(probs), p=probs)
+def sample_move(probs, temperature=1.0):
+    probs = np.asarray(probs).astype('float64')
+    probs = np.log(probs) / temperature
+    exp_probs = np.exp(probs)
+    probs = exp_probs / np.sum(exp_probs)
+    return np.random.choice(len(probs), p=probs)
 
 def predict_next_move(fen):
     model = tf.keras.models.load_model('chess_model.keras')
     encoded_board = encode_board(fen)
     while True:
         predicted_move_encoded = model.predict(np.expand_dims(encoded_board, axis=0))
-        # flat_index = sample_move(predicted_move_encoded[0].flatten(), temperature=0.5)
-        # # Convert the flat index back to 3D shape
-        # reshaped_move_encoded = np.zeros((8, 8, 2))
-        # reshaped_move_encoded[np.unravel_index(flat_index, (8, 8, 2))] = 1
-        uci_move = decode_move(predicted_move_encoded)
+        flat_index = sample_move(predicted_move_encoded[0].flatten(), temperature=0.7)
+        # Convert the flat index back to 3D shape
+        reshaped_move_encoded = np.zeros((8, 8, 2))
+        reshaped_move_encoded[np.unravel_index(flat_index, (8, 8, 2))] = 1
+        uci_move = decode_move(reshaped_move_encoded)
         print(uci_move)
         if is_valid_move(fen, uci_move):
             break
     return uci_move
 
 def is_valid_move(fen, uci_move):
+    # Check if the start and end squares are the same
+    if uci_move[:2] == uci_move[2:]:
+        return False
+
     board = chess.Board(fen)
     move = chess.Move.from_uci(uci_move)
     return move in board.legal_moves
