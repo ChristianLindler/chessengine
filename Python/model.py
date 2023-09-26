@@ -18,17 +18,34 @@ def train_model():
     encoded_moves = np.array(encoded_moves)
         
     model = tf.keras.models.Sequential([
-        tf.keras.layers.Conv2D(32, kernel_size=(3, 3), activation='relu', padding='same', input_shape=(8,8,20)),
+        tf.keras.layers.Conv2D(64, kernel_size=(3, 3), activation='relu', padding='same', input_shape=(8,8,20)),
+        tf.keras.layers.Dropout(0.3),
+        tf.keras.layers.Conv2D(128, kernel_size=(3, 3), activation='relu', padding='same'),
+        tf.keras.layers.Dropout(0.3),
         tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dense(256, activation='relu'),
+        tf.keras.layers.Dropout(0.3),
         tf.keras.layers.Dense(8 * 8 * 2, activation='softmax'),
-        tf.keras.layers.Reshape(8,8,2)
+        tf.keras.layers.Reshape((8,8,2))
     ])
 
     X_train, X_val, y_train, y_val = train_test_split(encoded_boards, encoded_moves, test_size=0.2, random_state=42)
 
-    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), loss='categorical_crossentropy', metrics=['accuracy'])
+    early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
 
-    model.fit(X_train, y_train, epochs=5, batch_size=32, validation_split=0.2)
+    def scheduler(epoch, lr):
+        if epoch < 10:
+            return lr
+        else:
+            return lr * 0.9
+    lr_scheduler = tf.keras.callbacks.LearningRateScheduler(scheduler)
+    model.fit(X_train, y_train, 
+              epochs=50, 
+              batch_size=32, 
+              validation_data=(X_val, y_val),
+              callbacks=[early_stopping, lr_scheduler])
 
-    model.save('chess_model.h5')
+    model.save('chess_model.keras')
+
+train_model()
