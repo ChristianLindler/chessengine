@@ -1,4 +1,5 @@
 import numpy as np
+import tqdm
 
 def encode_board(fen):
     encoded = np.zeros((8, 8, 20))
@@ -65,3 +66,10 @@ def decode_move(encoded_move):
     uci_move = start_square + end_square
     
     return uci_move
+
+def encode_piece_type(piece_type):
+    # One-hot encode the piece type
+    encoded = np.zeros(6)
+    encoded[piece_type - 1] = 1
+    return encoded
+
