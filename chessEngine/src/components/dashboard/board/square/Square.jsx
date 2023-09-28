@@ -3,7 +3,6 @@ import Paper from '@mui/material/Paper'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChessPawn, faChessRook, faChessBishop, faChessKnight, faChessQueen, faChessKing } from '@fortawesome/free-solid-svg-icons'
 
-
 const pieceImages = {
   p: faChessPawn,
   r: faChessRook,
@@ -21,8 +20,8 @@ function Square({ square, onClick, bgColor }) {
       onClick={onClick}
       style={{
         backgroundColor: bgColor,
-        width: '75px',
-        height: '75px',
+        width: '60px',
+        height: '60px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

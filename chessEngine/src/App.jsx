@@ -1,6 +1,6 @@
-import Board from "./components/board/Board"
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material"
 import Header from "./components/header/Header"
+import Dashboard from "./components/dashboard/Dashboard"
 
 const theme = createTheme({
   palette: {
@@ -20,7 +20,7 @@ function App() {
       <CssBaseline />
       <Header/>
       <div style={{paddingTop: '20px', display: 'flex', justifyContent: 'center'}}>
-        <Board />
+        <Dashboard/>
       </div>
     </ThemeProvider>
   )
