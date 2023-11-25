@@ -17,7 +17,8 @@ const Board = ({
   setGameOver,
 }) => {
   const theme = useTheme()
-  const audio = new Audio("/moveSound.mp3")
+  const moveSound = new Audio("/moveSound.mp3")
+  const checkSound = new Audio("/checkSound.mp3")
 
   const getNotation = (row, col) => {
     return letterMap[col] + (8 - row)
@@ -48,32 +49,18 @@ const Board = ({
   }
 
   const getBotMove = async () => {
-    try {
-      const response = await fetch("url of bot", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fen: chess.fen(),
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok")
-      }
-      const data = await response.json()
-      chess.move(data.move)
-      setBoard(chess.board())
-    } catch (error) {
-      console.error("Error calculating move: ", error)
-    }
+    const moves = chess.moves()
+    const move = moves[Math.floor(Math.random() * moves.length)]
+    chess.move(move)
+    setBoard(chess.board())
   }
 
-  const handleSquareClick = (row, col) => {
+  const handleSquareClick = async (row, col) => {
     if (gameOver) return
+    
     const clickedPiece = chess.get(getNotation(row, col))
 
+    // If the user hasn't selected a piece, check if they are currently selecting a piece
     if (!selectedPiece) {
       if (clickedPiece && clickedPiece.color === chess.turn()) {
         setSelectedPiece([row, col])
@@ -83,33 +70,44 @@ const Board = ({
         })
         setHighlighted(moves.map((move) => getIndices(move.to)))
       }
+    
     } else {
-      if (
-        highlighted.some(
-          (highlightedSquare) =>
-            highlightedSquare.row === row && highlightedSquare.col === col
-        )
-      ) {
+      // If we have selected a piece, check if the clicked square is currently highlightes
+      const isValidMove = highlighted.some(
+        (highlightedSquare) =>
+          highlightedSquare.row === row && highlightedSquare.col === col
+      )
+
+      // If it is highlighted, make a move
+      if (isValidMove) {
         chess.move(
           getNotation(selectedPiece[0], selectedPiece[1]) +
             getNotation(row, col)
         )
-        audio.play()
+
+        if (chess.isCheck()) {
+          checkSound.play()
+        } else {
+          moveSound.play()
+        }
+        
         setBoard(chess.board())
+        
+        // Check for game over, then make bot move.
+        if (chess.isCheckmate()) {
+          setGameOver(true)
+        } else {
+          await getBotMove()
+          setBoard(chess.board())
+          if (chess.isCheckmate()) setGameOver(true)
+        }
       }
+
       setSelectedPiece(null)
       setHighlighted([])
-
-      if (chess.isCheckmate()) {
-        setGameOver(true)
-      } else {
-        getBotMove()
-        audio.play()
-        setBoard(chess.board())
-        if (chess.isCheckmate()) setGameOver(true)
-      }
     }
   }
+  
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>

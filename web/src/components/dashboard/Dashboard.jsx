@@ -10,7 +10,7 @@ import Explanation from "./explanation/Explanation"
 const Dashboard = () => {
   const [chess, setChess] = useState(new Chess())
   const [board, setBoard] = useState(chess.board())
-  const [pieceColor, setPieceColor] = useState('w')
+  const [playerColor, setPlayerColor] = useState('w')
   const [selectedPiece, setSelectedPiece] = useState(null)
   const [highlighted, setHighlighted] = useState([])
   const [gameOver, setGameOver] = useState(false)
@@ -24,15 +24,15 @@ const Dashboard = () => {
     setGameOver(false)
   }
 
-  const togglePieceColor = () => {
-    setPieceColor(pieceColor === 'w' ? 'b' : 'w')
+  const togglePlayerColor = () => {
+    setPlayerColor(playerColor === 'w' ? 'b' : 'w')
     resetGame()
   }
 
   return (
-    <Grid container>
+    <Grid container justifyContent="center">
       <Grid item xs={0} sm={3} style={{ display: 'flex', justifyContent: 'center' }}>
-        <Form resetGame={resetGame} pieceColor={pieceColor} togglePieceColor={togglePieceColor}/>
+        <Form resetGame={resetGame} playerColor={playerColor} togglePlayerColor={togglePlayerColor}/>
       </Grid>
       <Grid item xs={12} sm={6} style={{display: 'flex', justifyContent: 'center'}}>
         <Board

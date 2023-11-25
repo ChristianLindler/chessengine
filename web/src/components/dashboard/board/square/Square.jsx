@@ -1,7 +1,8 @@
-import React from 'react'
-import Paper from '@mui/material/Paper'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChessPawn, faChessRook, faChessBishop, faChessKnight, faChessQueen, faChessKing } from '@fortawesome/free-solid-svg-icons'
+// Square.js
+import React from 'react';
+import Paper from '@mui/material/Paper';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChessPawn, faChessRook, faChessBishop, faChessKnight, faChessQueen, faChessKing } from '@fortawesome/free-solid-svg-icons';
 
 const pieceImages = {
   p: faChessPawn,
@@ -10,7 +11,7 @@ const pieceImages = {
   n: faChessKnight,
   q: faChessQueen,
   k: faChessKing
-}
+};
 
 function Square({ square, onClick, bgColor }) {
   return (
@@ -29,10 +30,15 @@ function Square({ square, onClick, bgColor }) {
         borderRadius: 0
       }}
     >
-      {square && (<FontAwesomeIcon size='2x' icon={pieceImages[square.type]} color={square.color === 'w' ? 'white' : 'black'}/>
+      {square && (
+        <FontAwesomeIcon
+          size='2x'
+          icon={pieceImages[square.type]}
+          color={square.color === 'w' ? 'white' : 'black'}
+        />
       )}
     </Paper>
-  )
+  );
 }
 
-export default Square
+export default Square;
